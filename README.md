@@ -1,7 +1,7 @@
 # GPS-accuracy
 
 ## 프로젝트 개요
-스마트폰으로 GPS 수신 시 오차를 잡기 위해 여러 라이브러리를 써서 오차를 잡고 필터를 통해 정확한 위치 계산
+스마트폰 GPS 위치정보 정확도 보정과 GPS 음영지역 대처를 위한 sensor fusion, dead reckoning 활용 Flutter Project
 
 ## 개발 환경
 - Flutter
