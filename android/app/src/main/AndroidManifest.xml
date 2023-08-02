@@ -6,7 +6,7 @@
         android:icon="@mipmap/ic_launcher">
         <!-- TODO : Add your Google Maps API key here -->
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD-JGIU4ZRS0xp4FbX-J-bv5BZi0QhddFE"/>
+            android:value="AIzaSyB4KAWdruEUdvK1APTE3KTrhdWtBll3tUw"/>
 
         <activity
             android:name=".MainActivity"
@@ -35,4 +35,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 </manifest>

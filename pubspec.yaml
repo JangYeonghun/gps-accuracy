@@ -39,6 +39,7 @@ dependencies:
   geolocator:
   flutter_background_service:
   provider:
+  permission_handler:
 
 
 
