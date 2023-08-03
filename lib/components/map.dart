@@ -12,8 +12,9 @@ class MapModule extends StatefulWidget {
 
 class _MapModuleState extends State<MapModule> {
   late GoogleMapController mapController;
-
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  bool _isTracking = true;
+  int flag = 2;
+  final LatLng _center = LatLng(45.521563, -122.677433);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -40,10 +41,24 @@ class _MapModuleState extends State<MapModule> {
               child: Text('내 위치로 이동'),
             ),
           ),
+          Positioned(
+            bottom: 16,
+            left: 16,
+            child: Switch(
+              value: _isTracking,
+              onChanged: (value) {
+                setState(() {
+                  _isTracking = value;
+                });
+              }
+            ),
+          )
         ],
       ),
     );
   }
+
+
 
   Set<Marker> _createMarkers() {
     final LatLngProv gpsProvider = Provider.of<LatLngProv>(context, listen: true);
@@ -55,6 +70,14 @@ class _MapModuleState extends State<MapModule> {
       infoWindow: InfoWindow(title: '현재 위치'),
     );
 
+
+    //tracking
+    flag = (flag+1)%2;
+
+    if (_isTracking && flag == 0){
+      _goToMyLocation();
+    }
+
     return {currentMarker};
   }
 
@@ -62,6 +85,6 @@ class _MapModuleState extends State<MapModule> {
     final LatLngProv gpsProvider = Provider.of<LatLngProv>(context, listen: false);
     final LatLng currentLatLng = LatLng(gpsProvider.Lat, gpsProvider.Lng);
 
-    mapController.animateCamera(CameraUpdate.newLatLng(currentLatLng));
+    mapController.animateCamera(CameraUpdate.newLatLngZoom(currentLatLng, 18));
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gps/components/gps.dart';
+
 import 'package:gps/components/permission.dart';
 import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
 import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
@@ -11,7 +12,7 @@ import 'components/gyroscope_frame/gyroscope_frame.dart';
 import 'components/magnetometer_frame/magnetometer_frame.dart';
 import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
 
-void main() {
+void main() async {
   runApp(
     MultiProvider(
       providers: [
@@ -23,6 +24,7 @@ void main() {
       child: MyApp(),
     ),
   );
+  PermissionModule.checkPermission();
 }
 
 class MyApp extends StatefulWidget {
@@ -35,11 +37,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    PermissionModule.checkPermission();
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Maps Sample App'),
+          title: const Text('GPS Accuracy'),
           backgroundColor: Colors.green[700],
         ),
         body: Stack(
