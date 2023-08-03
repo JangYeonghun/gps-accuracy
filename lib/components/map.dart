@@ -13,7 +13,7 @@ class MapModule extends StatefulWidget {
 class _MapModuleState extends State<MapModule> {
   late GoogleMapController mapController;
   bool _isTracking = true;
-
+  int flag = 2;
   final LatLng _center = LatLng(45.521563, -122.677433);
 
   void _onMapCreated(GoogleMapController controller) {
@@ -58,6 +58,8 @@ class _MapModuleState extends State<MapModule> {
     );
   }
 
+
+
   Set<Marker> _createMarkers() {
     final LatLngProv gpsProvider = Provider.of<LatLngProv>(context, listen: true);
     final LatLng currentLatLng = LatLng(gpsProvider.Lat, gpsProvider.Lng);
@@ -67,9 +69,15 @@ class _MapModuleState extends State<MapModule> {
       position: currentLatLng,
       infoWindow: InfoWindow(title: '현재 위치'),
     );
-    if (_isTracking == true){
+
+
+    //tracking
+    flag = (flag+1)%2;
+
+    if (_isTracking && flag == 0){
       _goToMyLocation();
     }
+
     return {currentMarker};
   }
 
