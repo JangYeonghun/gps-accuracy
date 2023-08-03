@@ -42,18 +42,20 @@ class _GpsModule extends State<GpsModule> {
         Provider.of<LatLngProv>(context, listen: false).message = '위도: ${position.latitude}, 경도: ${position.longitude}';
         Provider.of<LatLngProv>(context, listen: false).Lat = position.latitude;
         Provider.of<LatLngProv>(context, listen: false).Lng = position.longitude;
+        Provider.of<LatLngProv>(context, listen: false).accuracy = '오차범위: ${position.accuracy}m';
       });
     } catch (e) {
       setState(() {
         Provider.of<LatLngProv>(context, listen: false).message = '위치 정보를 가져오는데 실패했습니다: $e';
       });
+      _timer?.cancel();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
-        child: Text(context.watch<LatLngProv>().message),
-      );
+        child: Text('${context.watch<LatLngProv>().message}\n${context.watch<LatLngProv>().accuracy}'),
+    );
   }
 }
