@@ -6,7 +6,7 @@
         android:icon="@mipmap/ic_launcher">
         <!-- TODO : Add your Google Maps API key here -->
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB4KAWdruEUdvK1APTE3KTrhdWtBll3tUw"/>
+            android:value="AIzaSyA_upWyxFKt0KoPMz54ih1EasJkwRN9pcU"/>
 
         <activity
             android:name=".MainActivity"
