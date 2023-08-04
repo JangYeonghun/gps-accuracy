@@ -41,6 +41,7 @@ dependencies:
   provider:
   sqflite:
   permission_handler:
+  http:
 
 
 
