@@ -1,61 +1,60 @@
+//GPS steam data
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gps/provider/LatLngProvider.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 
 class GpsModule extends StatefulWidget {
   @override
-  _GpsModule createState() => _GpsModule();
+  _GpsModuleState createState() => _GpsModuleState();
 }
 
-class _GpsModule extends State<GpsModule> {
-  Timer? _timer;
+class _GpsModuleState extends State<GpsModule> {
+  final LocationSettings locationSettings = LocationSettings(
+    accuracy: LocationAccuracy.bestForNavigation,
+    distanceFilter: 10,
+  );
 
   @override
   void initState() {
+    print('시작');
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-      _getGps();
-    });
+    // 위치 업데이트를 받기 위해 위치 서비스를 시작합니다.
+    _startListeningToLocation();
   }
-
 
   @override
   void dispose() {
-    // 위젯이 dispose 될 때 타이머 중지
-    _timer?.cancel();
+    // 위치 서비스를 중지합니다.
+    _stopListeningToLocation();
     super.dispose();
   }
 
+  void _startListeningToLocation() {
+    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
 
-  Future<void> _getGps() async {
-    try {
-      // 권한이 승인되면 위치 정보 가져오기
-      Geolocator geolocator = Geolocator();
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
-      );
+      print('업데이트');
+      // 위치 업데이트를 받았을 때 실행되는 부분입니다.
+      Provider.of<LatLngProv>(context, listen: false).message =
+      '위도: ${position.latitude}, 경도: ${position.longitude}';
+      Provider.of<LatLngProv>(context, listen: false).Lat = position.latitude;
+      Provider.of<LatLngProv>(context, listen: false).Lng = position.longitude;
+      Provider.of<LatLngProv>(context, listen: false).accuracy =
+      '오차범위: ${position.accuracy}m';
+    });
+  }
 
-      // 위도와 경도를 문자열로 변환하여 출력
-      setState(() {
-        Provider.of<LatLngProv>(context, listen: false).message = '위도: ${position.latitude}, 경도: ${position.longitude}';
-        Provider.of<LatLngProv>(context, listen: false).Lat = position.latitude;
-        Provider.of<LatLngProv>(context, listen: false).Lng = position.longitude;
-        Provider.of<LatLngProv>(context, listen: false).accuracy = '오차범위: ${position.accuracy}m';
-      });
-    } catch (e) {
-      setState(() {
-        Provider.of<LatLngProv>(context, listen: false).message = '위치 정보를 가져오는데 실패했습니다: $e';
-      });
-      _timer?.cancel();
-    }
+  void _stopListeningToLocation() {
+    print('리스너 종료');
+    // 위치 업데이트 리스너를 취소합니다.
+    Geolocator.getPositionStream().listen(null).cancel();
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
-        child: Text('${context.watch<LatLngProv>().message}\n${context.watch<LatLngProv>().accuracy}'),
+      child: Text(
+          '${context.watch<LatLngProv>().message}\n${context.watch<LatLngProv>().accuracy}'),
     );
   }
 }

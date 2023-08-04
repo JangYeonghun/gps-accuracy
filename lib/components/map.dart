@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ class MapModule extends StatefulWidget {
 class _MapModuleState extends State<MapModule> {
   late GoogleMapController mapController;
   bool _isTracking = true;
-  int flag = 2;
+  Timer? _timer;
   final LatLng _center = LatLng(45.521563, -122.677433);
 
   void _onMapCreated(GoogleMapController controller) {
@@ -70,14 +71,6 @@ class _MapModuleState extends State<MapModule> {
       infoWindow: InfoWindow(title: '현재 위치'),
     );
 
-
-    //tracking
-    flag = (flag+1)%2;
-
-    if (_isTracking && flag == 0){
-      _goToMyLocation();
-    }
-
     return {currentMarker};
   }
 
@@ -87,4 +80,25 @@ class _MapModuleState extends State<MapModule> {
 
     mapController.animateCamera(CameraUpdate.newLatLngZoom(currentLatLng, 18));
   }
+
+
+  //tracking
+  @override
+  void initState() {
+    super.initState();
+    // 2초마다 코드를 반복 실행합니다.
+    _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
+      if (_isTracking) {
+        _goToMyLocation();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // 페이지가 종료될 때 타이머를 취소합니다.
+    _timer?.cancel();
+    super.dispose();
+  }
 }
+
