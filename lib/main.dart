@@ -70,6 +70,7 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
         ),
+        
         bottomNavigationBar: GpsModule(),
       ),
     );
