@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gps/components/gps.dart';
+
 import 'package:gps/components/permission.dart';
 import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
 import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
@@ -17,7 +18,7 @@ import 'package:gps/class/sensorfusion/dead_reckoning.dart'; // 클래스 파일
 
 // home: DeadReckoningApp(), 이렇게 부르면 됌
 
-void main() {
+void main() async {
   runApp(
     MultiProvider(
       providers: [
@@ -29,6 +30,7 @@ void main() {
       child: MyApp(),
     ),
   );
+  PermissionModule.checkPermission();
 }
 
 class MyApp extends StatefulWidget {
@@ -41,11 +43,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    PermissionModule.checkPermission();
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Maps Sample App'),
+          title: const Text('GPS Accuracy'),
           backgroundColor: Colors.green[700],
         ),
         body: Stack(
