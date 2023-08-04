@@ -1,4 +1,4 @@
-//GPS steam data
+//GPS stream data
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gps/provider/LatLngProvider.dart';
