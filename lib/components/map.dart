@@ -15,7 +15,7 @@ class _MapModuleState extends State<MapModule> {
   late GoogleMapController mapController;
   bool _isTracking = true;
   Timer? _timer;
-  final LatLng _center = LatLng(45.521563, -122.677433);
+  final LatLng _center = LatLng(0, 0);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -68,8 +68,11 @@ class _MapModuleState extends State<MapModule> {
     final Marker currentMarker = Marker(
       markerId: MarkerId('currentLocation'),
       position: currentLatLng,
-      infoWindow: InfoWindow(title: '현재 위치'),
     );
+
+    if (_isTracking) {
+      _goToMyLocation();
+    }
 
     return {currentMarker};
   }
@@ -78,27 +81,7 @@ class _MapModuleState extends State<MapModule> {
     final LatLngProv gpsProvider = Provider.of<LatLngProv>(context, listen: false);
     final LatLng currentLatLng = LatLng(gpsProvider.Lat, gpsProvider.Lng);
 
-    mapController.animateCamera(CameraUpdate.newLatLngZoom(currentLatLng, 18));
-  }
-
-
-  //tracking
-  @override
-  void initState() {
-    super.initState();
-    // 2초마다 코드를 반복 실행합니다.
-    _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
-      if (_isTracking) {
-        _goToMyLocation();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    // 페이지가 종료될 때 타이머를 취소합니다.
-    _timer?.cancel();
-    super.dispose();
+    mapController.animateCamera(CameraUpdate.newLatLngZoom(currentLatLng, 17));
   }
 }
 
