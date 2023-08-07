@@ -1,8 +1,9 @@
-//GPS stream data
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gps/provider/LatLngProvider.dart';
 import 'package:provider/provider.dart';
+import 'dart:collection';
+import 'package:latlong2/latlong.dart';
 
 class GpsModule extends StatefulWidget {
   @override
@@ -10,9 +11,11 @@ class GpsModule extends StatefulWidget {
 }
 
 class _GpsModuleState extends State<GpsModule> {
+  Queue<double> GpsQueue = ListQueue<double>(2);
+
   final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.bestForNavigation,
-    distanceFilter: 10,
+    distanceFilter: 5,
   );
 
   @override
@@ -32,15 +35,35 @@ class _GpsModuleState extends State<GpsModule> {
 
   void _startListeningToLocation() {
     Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
+      final gpsProvider = Provider.of<LatLngProv>(context, listen: false);
 
       print('업데이트');
       // 위치 업데이트를 받았을 때 실행되는 부분입니다.
-      Provider.of<LatLngProv>(context, listen: false).message =
-      '위도: ${position.latitude}, 경도: ${position.longitude}';
-      Provider.of<LatLngProv>(context, listen: false).Lat = position.latitude;
-      Provider.of<LatLngProv>(context, listen: false).Lng = position.longitude;
-      Provider.of<LatLngProv>(context, listen: false).accuracy =
-      '오차범위: ${position.accuracy}m';
+      gpsProvider.message = '위도: ${position.latitude}, 경도: ${position.longitude}';
+      gpsProvider.Lat = position.latitude;
+      gpsProvider.Lng = position.longitude;
+      gpsProvider.accuracy = position.accuracy;
+      DateTime now = DateTime.now();
+      gpsProvider.Tick = now.hour * 1 + now.minute / 60 + now.second / 3600;
+
+      // Gps 기반 속도 측정
+      if (GpsQueue.isNotEmpty) {
+        final Distance distance = Distance();
+        print(GpsQueue);
+        double OldLat = GpsQueue.removeFirst();
+        double OldLng = GpsQueue.removeFirst();
+        double OldTm = GpsQueue.removeFirst();
+        final double meter = distance(LatLng(OldLat, OldLng), LatLng(gpsProvider.Lat, gpsProvider.Lng));
+        double t_t = gpsProvider.Tick - OldTm;
+        gpsProvider.GpsSpeed = meter/t_t/1000;
+        // 테스트 출력
+        print("==================================");
+        print("$OldLat\n$OldLng\n$OldTm\n$meter\n$t_t");
+        print("==================================");
+      } else {
+        gpsProvider.GpsSpeed = 0;
+      }
+      GpsQueue.addAll([gpsProvider.Lat, gpsProvider.Lng, gpsProvider.Tick]);
     });
   }
 
@@ -54,7 +77,7 @@ class _GpsModuleState extends State<GpsModule> {
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
       child: Text(
-          '${context.watch<LatLngProv>().message}\n${context.watch<LatLngProv>().accuracy}'),
+          '${context.watch<LatLngProv>().message}\n오차범위: ${context.watch<LatLngProv>().accuracy}m\n위치기반 속도: ${context.watch<LatLngProv>().GpsSpeed}km/h'),
     );
   }
 }
