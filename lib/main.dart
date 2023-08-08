@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gps/components/gps.dart';
 import 'package:gps/components/permission.dart';
+import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
 import 'package:gps/provider/LogProvider.dart';
 import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
 import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:gps/provider/LatLngProvider.dart';
 import 'package:gps/components/map.dart';
-import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
+import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
 import 'package:gps/class/sensorfusion/simple_kalman_filter.dart';
 import 'components/accelerometer_frame/accelerometer_frame.dart';
+import 'components/accelerometer_frame/useraccelerometer_frame.dart';
 import 'components/gyroscope_frame/gyroscope_frame.dart';
 import 'components/magnetometer_frame/magnetometer_frame.dart';
 
@@ -23,6 +25,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LatLngProv()),
+        ChangeNotifierProvider(create: (_) => UserAccelerometerProvider()),
         ChangeNotifierProvider(create: (_) => AccelerometerProvider()),
         ChangeNotifierProvider(create: (_) => GyroscopeProvider()),
         ChangeNotifierProvider(create: (_) => MagnetometerProvider()),
@@ -55,20 +58,23 @@ class _MyAppState extends State<MyApp> {
             MapModule(),
             Positioned.fill(
               top: 0,
-              child: AccelerometerFrame(),
+              child: UserAccelerometerFrame(),
             ),
             Positioned.fill(
               top: 40,
-              child: GyroscopeFrame(),
+              child: AccelerometerFrame(),
             ),
             Positioned.fill(
               top: 80,
+              child: GyroscopeFrame(),
+            ),
+            Positioned.fill(
+              top: 120,
               child: MagnetometerFrame(),
             ),
-            DeadReckoningApp(), // 위치 추정과 Kalman 필터를 담당하는 DeadReckoningApp 추가
             Positioned.fill(
-              top: 100,
-              child: AccelerometerFrame(),
+              top: 160,
+              child: DeadReckoningApp(),
             ),
           ],
         ),
