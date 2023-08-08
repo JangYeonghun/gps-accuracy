@@ -1,9 +1,8 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:gps/class/sensorfusion/simple_kalman_filter.dart';
 import 'package:provider/provider.dart';
-import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
-import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
+import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
 
 class DeadReckoningApp extends StatelessWidget {
   @override
@@ -18,46 +17,40 @@ class _DeadReckoningAppState extends StatefulWidget {
 }
 
 class __DeadReckoningAppStateState extends State<_DeadReckoningAppState> {
-  double _currentSpeed = 0.0; // 현재 속도
   double _currentDirection = 0.0; // 현재 방향 (각도)
 
   @override
   void initState() {
     super.initState();
-    // GyroscopeProvider와 UserAccelerometerProvider를 Provider로부터 가져옴
-    final gyroscopeProvider = Provider.of<GyroscopeProvider>(context, listen: false);
-    final useraccelerometerProvider = Provider.of<UserAccelerometerProvider>(context, listen: false);
+    // MagnetometerProvider를 Provider로부터 가져옴
+    final magnetometerProvider = Provider.of<MagnetometerProvider>(context, listen: false);
 
     // 센서 데이터 수집 및 계산 로직
     Timer.periodic(Duration(milliseconds: 100), (timer) {
-      List<double>? gyroscopeValues = gyroscopeProvider.userGyroscopeValues;
-      List<double>? useraccelerometerValues = useraccelerometerProvider.userAccelerometerValues;
+      List<double>? magnetometerValues = magnetometerProvider.userMagnetometerValues;
 
-      double someConversionFactor = 0.1;
-
-      if (gyroscopeValues != null && useraccelerometerValues != null) {
-        // 가속도 센서 값
-        double useraccelerationX = useraccelerometerValues[0];
-        double useraccelerationY = useraccelerometerValues[1];
-        double useraccelerationZ = useraccelerometerValues[2];
-
-        // 가속도 센서 xyz 좌표가 0.1 ~ -0.1 사이면 정지로 판단
-        if (useraccelerationX > -0.1 && useraccelerationX < 0.1 &&
-            useraccelerationY > -0.1 && useraccelerationY < 0.1 &&
-            useraccelerationZ > -0.1 && useraccelerationZ < 0.1) {
-          _currentSpeed = 0.0;
-          _currentDirection = gyroscopeValues[0]; // 자이로스코프의 x축 각도를 방향으로 설정
-        } else if (useraccelerationX >= 0.1) {
-          // 0.1 이상이면 직진
-          _currentSpeed = useraccelerationX * someConversionFactor; // 가속도 값을 속도로 변환 (변환 계수 필요)
-          _currentDirection = gyroscopeValues[0];
-        } else if (useraccelerationX <= -0.1) {
-          // -0.1 이하이면 후진
-          _currentSpeed = -useraccelerationX * someConversionFactor; // 가속도 값을 속도로 변환 (변환 계수 필요)
-          _currentDirection = gyroscopeValues[0];
-        }
+      if (magnetometerValues != null) {
+        // 자기센서의 Z 축 값을 방향으로 설정
+        _currentDirection = _calculateDirection(magnetometerValues);
       }
+
+      // 방향값을 갱신하려면 setState를 호출하여 변경된 값을 UI에 반영합니다.
+      setState(() {
+        _currentDirection = _currentDirection;
+      });
     });
+  }
+
+  // 자기센서 값으로 방향 계산하는 메서드
+  double _calculateDirection(List<double> magnetometerValues) {
+    double x = magnetometerValues[0];
+    double y = magnetometerValues[1];
+
+    // x, y 값으로부터 방향(각도) 계산 (예시로 단순 계산)
+    // 실제로는 센서 퓨전 알고리즘을 사용하는 것이 더 정확합니다.
+    double direction = -180 * atan2(y, x) / pi;
+
+    return direction;
   }
 
   @override
@@ -71,8 +64,7 @@ class __DeadReckoningAppStateState extends State<_DeadReckoningAppState> {
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Text(
-          'Current Speed: $_currentSpeed\n'
-          'Current Direction: $_currentDirection',
+          '현재 방향: $_currentDirection',
           style: TextStyle(fontSize: 14),
         ),
       ),
