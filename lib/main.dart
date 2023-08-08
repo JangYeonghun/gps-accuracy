@@ -15,7 +15,6 @@ import 'components/gyroscope_frame/gyroscope_frame.dart';
 import 'components/magnetometer_frame/magnetometer_frame.dart';
 import 'package:gps/class/sensorfusion/dead_reckoning.dart'; // 클래스 파일로 로직 이동
 // home: DeadReckoningApp(), 이렇게 부르면 됌
-import 'package:gps/provider/LogProvider.dart';
 
 void main() async {
   runApp(

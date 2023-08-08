@@ -7,7 +7,7 @@ import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
 import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
 import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
 
-int num = 1;
+int index = 1;
 
 class LogModule {
   static void logging(BuildContext context) {
@@ -20,7 +20,7 @@ class LogModule {
     final logProv = Provider.of<LogProv>(context, listen: false);
 
     print('======================================================================================================');
-    print('$now     [Log$num]');
+    print('$now     [Log$index]');
     print('Coord: ${gpsProv.Lat}, ${gpsProv.Lng}');
     print('Accel: ${accProv.accelerometerValues?[0]}, ${accProv.accelerometerValues?[1]}, ${accProv.accelerometerValues?[2]}');
     print('U_Accel: ${uaccProv.userAccelerometerValues?[0]}, ${uaccProv.userAccelerometerValues?[1]}, ${uaccProv.userAccelerometerValues?[2]}');
@@ -29,14 +29,14 @@ class LogModule {
     print('======================================================================================================');
 
     logProv.Log += '===============================\n';
-    logProv.Log += '$now     [Log$num]\n\n';
-    logProv.Log += '[Location]\n${gpsProv.Lat}, ${gpsProv.Lng}\n\n';
-    logProv.Log += '[Accelerometer]\n${accProv.accelerometerValues?[0]}\n${accProv.accelerometerValues?[1]}\n${accProv.accelerometerValues?[2]}\n\n';
-    logProv.Log += '[Accelerometer_User]\n${uaccProv.userAccelerometerValues?[0]}\n${uaccProv.userAccelerometerValues?[1]}\n${uaccProv.userAccelerometerValues?[2]}\n\n';
-    logProv.Log += '[Gyroscope]\n${gyProv.userGyroscopeValues?[0]}\n${gyProv.userGyroscopeValues?[1]}\n${gyProv.userGyroscopeValues?[2]}\n\n';
-    logProv.Log += '[Magentometer]\n${mgProv.userMagnetometerValues?[0]}\n${mgProv.userMagnetometerValues?[1]}\n${mgProv.userMagnetometerValues?[2]}\n';
+    logProv.Log += '$now     [Log$index]\n\n';
+    logProv.Log += '[Location]\nLat: ${gpsProv.Lat}, Lng: ${gpsProv.Lng}\n\n';
+    logProv.Log += '[Accelerometer]\nX: ${accProv.accelerometerValues?[0]}\nY: ${accProv.accelerometerValues?[1]}\nZ: ${accProv.accelerometerValues?[2]}\n\n';
+    logProv.Log += '[Accelerometer_User]\nX: ${uaccProv.userAccelerometerValues?[0]}\nY: ${uaccProv.userAccelerometerValues?[1]}\nZ: ${uaccProv.userAccelerometerValues?[2]}\n\n';
+    logProv.Log += '[Gyroscope]\nX: ${gyProv.userGyroscopeValues?[0]}\nY: ${gyProv.userGyroscopeValues?[1]}\nZ: ${gyProv.userGyroscopeValues?[2]}\n\n';
+    logProv.Log += '[Magentometer]\nX: ${mgProv.userMagnetometerValues?[0]}\nY: ${mgProv.userMagnetometerValues?[1]}\nZ: ${mgProv.userMagnetometerValues?[2]}\n';
     logProv.Log += '===============================\n\n';
 
-    num += 1;
+    index += 1;
   }
 }
