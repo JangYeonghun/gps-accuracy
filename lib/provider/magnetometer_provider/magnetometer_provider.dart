@@ -29,27 +29,6 @@ class MagnetometerProvider with ChangeNotifier {
         cancelOnError: true,
       ),
     );
-
-    _streamSubscriptions.add(
-      magnetometerEvents.listen(
-            (MagnetometerEvent event) {
-          // 자이로 센서 값들을 리스트로 저장하여 큐에 추가
-          List<double> magnetometerValues = [event.x, event.y, event.z];
-          _magnetometerQueue.add(magnetometerValues);
-
-          // 큐의 크기가 최대 크기를 초과할 경우 가장 오래된 값을 제거
-          if (_magnetometerQueue.length > _maxQueueSize) {
-            _magnetometerQueue.removeFirst();
-          }
-
-          notifyListeners(); // 상태 변화 알림
-        },
-        onError: (e) {
-          // Handle error if necessary
-        },
-        cancelOnError: true,
-      ),
-    );
   }
 
   // 센서 값을 반환하는 메서드를 수정하여 큐에서 값을 꺼내서 반환
