@@ -9,16 +9,13 @@ import 'package:provider/provider.dart';
 import 'package:gps/provider/LatLngProvider.dart';
 import 'package:gps/components/map.dart';
 import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
-import 'package:gps/class/sensorfusion/simple_kalman_filter.dart';
 import 'components/accelerometer_frame/accelerometer_frame.dart';
 import 'components/accelerometer_frame/useraccelerometer_frame.dart';
 import 'components/gyroscope_frame/gyroscope_frame.dart';
 import 'components/magnetometer_frame/magnetometer_frame.dart';
-
-import 'package:gps/class/sensorfusion/simple_kalman_filter.dart'; // Kalman 필터를 정의한 파일 임포트
 import 'package:gps/class/sensorfusion/dead_reckoning.dart'; // 클래스 파일로 로직 이동
-
 // home: DeadReckoningApp(), 이렇게 부르면 됌
+import 'package:gps/provider/LogProvider.dart';
 
 void main() async {
   runApp(
@@ -75,10 +72,9 @@ class _MyAppState extends State<MyApp> {
             Positioned.fill(
               top: 160,
               child: DeadReckoningApp(),
-            ),
+            )
           ],
         ),
-        
         bottomNavigationBar: GpsModule(),
       ),
     );

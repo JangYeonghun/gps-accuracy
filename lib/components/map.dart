@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gps/provider/LatLngProvider.dart';
+import 'package:gps/components/logwindow.dart';
 
 class MapModule extends StatefulWidget {
   const MapModule({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class MapModule extends StatefulWidget {
 class _MapModuleState extends State<MapModule> {
   late GoogleMapController mapController;
   bool _isTracking = true;
+  bool _showLog = false;
   Timer? _timer;
   final LatLng _center = LatLng(0, 0);
 
@@ -53,7 +55,26 @@ class _MapModuleState extends State<MapModule> {
                 });
               }
             ),
-          )
+          ),
+          Positioned(
+              bottom: 50,
+              left: 16,
+              child: Switch(
+                  value: _showLog,
+                  onChanged: (value) {
+                    setState(() {
+                      _showLog = value;
+                    });
+                  }
+              )
+          ),
+          if (_showLog)
+            Positioned(
+              bottom: 5,
+              left: 70,
+              right: 50,
+              child: LogWindow(),
+            ),
         ],
       ),
     );
