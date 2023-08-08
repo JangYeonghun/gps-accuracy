@@ -4,12 +4,16 @@ class LatLngProv with ChangeNotifier {
   double _Lat = 0;
   double _Lng = 0;
   String _message = '위치 정보를 가져오는 중...';
-  String _accuracy = '';
+  double _accuracy = 0;
+  double _GpsSpeed = 0;
+  double _Tick = 0;
 
   double get Lat => _Lat;
   double get Lng => _Lng;
   String get message => _message;
-  String get accuracy => _accuracy;
+  double get accuracy => _accuracy;
+  double get GpsSpeed => _GpsSpeed;
+  double get Tick => _Tick;
 
   set Lat(double newLat) {
     _Lat = newLat;
@@ -26,8 +30,18 @@ class LatLngProv with ChangeNotifier {
     notifyListeners();
   }
 
-  set accuracy(String newAccuracy){
+  set accuracy(double newAccuracy){
     _accuracy = newAccuracy;
+    notifyListeners();
+  }
+
+  set GpsSpeed(double newGpsSpeed){
+    _GpsSpeed = newGpsSpeed;
+    notifyListeners();
+  }
+
+  set Tick(double newTick) {
+    _Tick = newTick;
     notifyListeners();
   }
 }
