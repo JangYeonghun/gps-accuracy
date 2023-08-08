@@ -1,29 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gps/class/sensorfusion/simple_kalman_filter.dart';
 import 'package:provider/provider.dart';
-import 'simple_kalman_filter.dart';
-import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
+import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
 import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
-import 'package:gps/provider/LatLngProvider.dart';
 
 class DeadReckoningApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<AccelerometerProvider>(
-          create: (_) => AccelerometerProvider(),
-        ),
-        ChangeNotifierProvider<GyroscopeProvider>(
-          create: (_) => GyroscopeProvider(),
-        ),
-        ChangeNotifierProvider<LatLngProv>(
-          create: (_) => LatLngProv(),
-        ),
-      ],
-      child: MaterialApp(
-        home: _DeadReckoningAppState(),
-      ),
-    );
+    return _DeadReckoningAppState();
   }
 }
 
@@ -33,74 +18,63 @@ class _DeadReckoningAppState extends StatefulWidget {
 }
 
 class __DeadReckoningAppStateState extends State<_DeadReckoningAppState> {
-  double speed = 0.0;
-  double distance = 0.0;
+  double _currentSpeed = 0.0; // 현재 속도
+  double _currentDirection = 0.0; // 현재 방향 (각도)
 
-  // Kalman 필터 변수 추가
-  SimpleKalmanFilter latKalmanFilter = SimpleKalmanFilter(0.01, 0.1);
-  SimpleKalmanFilter lonKalmanFilter = SimpleKalmanFilter(0.01, 0.1);
+  @override
+  void initState() {
+    super.initState();
+    // GyroscopeProvider와 UserAccelerometerProvider를 Provider로부터 가져옴
+    final gyroscopeProvider = Provider.of<GyroscopeProvider>(context, listen: false);
+    final useraccelerometerProvider = Provider.of<UserAccelerometerProvider>(context, listen: false);
+
+    // 센서 데이터 수집 및 계산 로직
+    Timer.periodic(Duration(milliseconds: 100), (timer) {
+      List<double>? gyroscopeValues = gyroscopeProvider.userGyroscopeValues;
+      List<double>? useraccelerometerValues = useraccelerometerProvider.userAccelerometerValues;
+
+      double someConversionFactor = 0.1;
+
+      if (gyroscopeValues != null && useraccelerometerValues != null) {
+        // 가속도 센서 값
+        double useraccelerationX = useraccelerometerValues[0];
+        double useraccelerationY = useraccelerometerValues[1];
+        double useraccelerationZ = useraccelerometerValues[2];
+
+        // 가속도 센서 xyz 좌표가 0.1 ~ -0.1 사이면 정지로 판단
+        if (useraccelerationX > -0.1 && useraccelerationX < 0.1 &&
+            useraccelerationY > -0.1 && useraccelerationY < 0.1 &&
+            useraccelerationZ > -0.1 && useraccelerationZ < 0.1) {
+          _currentSpeed = 0.0;
+          _currentDirection = gyroscopeValues[0]; // 자이로스코프의 x축 각도를 방향으로 설정
+        } else if (useraccelerationX >= 0.1) {
+          // 0.1 이상이면 직진
+          _currentSpeed = useraccelerationX * someConversionFactor; // 가속도 값을 속도로 변환 (변환 계수 필요)
+          _currentDirection = gyroscopeValues[0];
+        } else if (useraccelerationX <= -0.1) {
+          // -0.1 이하이면 후진
+          _currentSpeed = -useraccelerationX * someConversionFactor; // 가속도 값을 속도로 변환 (변환 계수 필요)
+          _currentDirection = gyroscopeValues[0];
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final accelerometerProvider = Provider.of<AccelerometerProvider>(context);
-    final gyroscopeProvider = Provider.of<GyroscopeProvider>(context);
-    final latLngProvider = Provider.of<LatLngProv>(context); // LatLngProv 인스턴스 가져오기
-
-    // 가속도계와 자이로스코프 데이터 가져오기
-    final accelerometerValues = accelerometerProvider.userAccelerometerValues;
-    final gyroscopeValues = gyroscopeProvider.userGyroscopeValues;
-
-    // LatLngProv 인스턴스의 멤버 변수인 Lat와 Lng를 사용하여 위도와 경도 정보 가져오기
-    double latitude = latLngProvider.Lat;
-    double longitude = latLngProvider.Lng;
-
-    // 가속도계와 자이로스코프 데이터를 이용하여 위치 추정 등 로직을 수행
-    if (accelerometerValues != null && gyroscopeValues != null) {
-      // 가속도계와 자이로스코프 데이터를 이용하여 속도 및 이동 거리 추정
-      double timeInterval = 0.1; // 샘플링 간격 (예: 0.1초)
-      double accelerationX = accelerometerValues[0]; // X축 가속도 데이터 사용
-      double accelerationY = accelerometerValues[1]; // Y축 가속도 데이터 사용
-      double accelerationZ = accelerometerValues[2]; // Z축 가속도 데이터 사용
-      double angularSpeedX = gyroscopeValues[0]; // X축 자이로스코프 데이터 사용
-      double angularSpeedY = gyroscopeValues[1]; // Y축 자이로스코프 데이터 사용
-      double angularSpeedZ = gyroscopeValues[2]; // Z축 자이로스코프 데이터 사용
-
-      // 속도 추정 (적분)
-      speed += (accelerationX * timeInterval);
-      speed += (accelerationY * timeInterval);
-      speed += (accelerationZ * timeInterval);
-
-      // 이동 거리 추정 (적분)
-      distance += (speed * timeInterval);
-
-      // 위치 갱신 (이동 거리를 현재 위치에 반영)
-      latitude += (distance / 111000.0); // 1도는 약 111km
-
-      // Kalman 필터를 사용하여 위치 추정 보정
-      latitude = latKalmanFilter.filter(latitude);
-      longitude = lonKalmanFilter.filter(longitude);
-
-      // LatLngProv에 위치 정보 업데이트
-      // setState() 호출을 빌드가 완료된 후로 미룸
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        latLngProvider.Lat = latitude;
-        latLngProvider.Lng = longitude;
-      });
-    }
-
-    // 정수로 변환하여 출력
-    int roundedSpeed = speed.toInt();
-    int roundedDistance = distance.toInt();
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('현재 위도: $latitude', style: TextStyle(fontSize: 14)),
-          Text('현재 경도: $longitude', style: TextStyle(fontSize: 14)),
-          Text('현재 속도: $roundedSpeed m/s', style: TextStyle(fontSize: 14)),
-          Text('이동 거리: $roundedDistance m', style: TextStyle(fontSize: 14)),
-        ],
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Text(
+          'Current Speed: $_currentSpeed\n'
+          'Current Direction: $_currentDirection',
+          style: TextStyle(fontSize: 14),
+        ),
       ),
     );
   }
