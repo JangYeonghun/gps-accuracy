@@ -12,7 +12,7 @@ class GpsModule extends StatefulWidget {
 }
 
 class _GpsModuleState extends State<GpsModule> {
-  Queue<double> GpsQueue = ListQueue<double>(2);
+  Queue<double> GpsQueue = ListQueue<double>(3);
 
   final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.bestForNavigation,
@@ -21,7 +21,6 @@ class _GpsModuleState extends State<GpsModule> {
 
   @override
   void initState() {
-    print('시작');
     super.initState();
     // 위치 업데이트를 받기 위해 위치 서비스를 시작합니다.
     _startListeningToLocation();
