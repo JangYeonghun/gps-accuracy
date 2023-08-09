@@ -21,7 +21,7 @@ class _MagnetometerFrameState extends State<MagnetometerFrame> {
     return Align(
       alignment: Alignment.topLeft,
       child: Container(
-        padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),

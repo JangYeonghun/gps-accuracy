@@ -1,19 +1,12 @@
 import 'package:flutter/cupertino.dart';
 
 class LogProv with ChangeNotifier {
-  String _LatLngLog = '';
-  String _SensorLog = '';
+  String _Log = '';
 
-  String get LatLngLog => _LatLngLog;
-  String get SensorLog => _SensorLog;
+  String get Log => _Log;
 
-  set LatLngLog(String newLatLngLog) {
-    _LatLngLog = newLatLngLog;
-    notifyListeners();
-  }
-
-  set SensorLog(String newSensorLog) {
-    _SensorLog = newSensorLog;
+  set Log(String newLog) {
+    _Log = newLog;
     notifyListeners();
   }
 }

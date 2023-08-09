@@ -39,11 +39,10 @@ dependencies:
   geolocator:
   flutter_background_service:
   provider:
-  sqflite:
   permission_handler:
-  http:
   latlong2:
-
+  pedometer:
+  url_launcher:
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gps/class/sensorfusion/get_out_car.dart';
 import 'package:gps/components/gps.dart';
 import 'package:gps/components/permission.dart';
 import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
@@ -9,15 +10,13 @@ import 'package:provider/provider.dart';
 import 'package:gps/provider/LatLngProvider.dart';
 import 'package:gps/components/map.dart';
 import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
-import 'package:gps/class/sensorfusion/simple_kalman_filter.dart';
 import 'components/accelerometer_frame/accelerometer_frame.dart';
 import 'components/accelerometer_frame/useraccelerometer_frame.dart';
 import 'components/gyroscope_frame/gyroscope_frame.dart';
 import 'components/magnetometer_frame/magnetometer_frame.dart';
-
-import 'package:gps/class/sensorfusion/simple_kalman_filter.dart'; // Kalman 필터를 정의한 파일 임포트
-import 'package:gps/class/sensorfusion/dead_reckoning.dart'; // 클래스 파일로 로직 이동
-
+import 'package:gps/class/sensorfusion/dead_reckoning.dart';
+import 'package:gps/components/gpschecker.dart';
+// 클래스 파일로 로직 이동
 // home: DeadReckoningApp(), 이렇게 부르면 됌
 
 void main() async {
@@ -74,12 +73,11 @@ class _MyAppState extends State<MyApp> {
             ),
             Positioned.fill(
               top: 160,
-              child: DeadReckoningApp(),
+              child: GetOutCar(),
             ),
           ],
         ),
-        
-        bottomNavigationBar: GpsModule(),
+        bottomNavigationBar: GpsChecker(),
       ),
     );
   }
