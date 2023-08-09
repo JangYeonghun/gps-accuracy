@@ -41,8 +41,8 @@ dependencies:
   provider:
   permission_handler:
   latlong2:
+  pedometer:
   url_launcher:
-
 
 
   # The following adds the Cupertino Icons font to your application.

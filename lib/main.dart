@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gps/class/sensorfusion/get_out_car.dart';
 import 'package:gps/components/gps.dart';
 import 'package:gps/components/permission.dart';
 import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
@@ -72,7 +73,7 @@ class _MyAppState extends State<MyApp> {
             ),
             Positioned.fill(
               top: 160,
-              child: DeadReckoningApp(),
+              child: GetOutCar(),
             ),
           ],
         ),
