@@ -39,10 +39,9 @@ dependencies:
   geolocator:
   flutter_background_service:
   provider:
-  sqflite:
   permission_handler:
-  http:
   latlong2:
+  url_launcher:
 
 
 
