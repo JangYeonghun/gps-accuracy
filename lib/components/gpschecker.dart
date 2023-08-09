@@ -10,7 +10,6 @@ class GpsChecker extends StatefulWidget {
 }
 
 class _GpsCheckerState extends State<GpsChecker> {
-
   bool _pass = false;
 
   Future<void> check() async {
@@ -26,6 +25,7 @@ class _GpsCheckerState extends State<GpsChecker> {
 
   @override
   Widget build(BuildContext context) {
+    check();
     return _pass ? GpsModule() : AlertDialog(
       content: Text('실행에 위치서비스가 필요합니다.'),
       actions: [
