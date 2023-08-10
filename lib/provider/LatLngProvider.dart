@@ -7,6 +7,8 @@ class LatLngProv with ChangeNotifier {
   double _accuracy = 0;
   double _GpsSpeed = 0;
   double _Tick = 0;
+  double _GpsDirect = 0;
+  String _GpsDirT = '?';
 
   double get Lat => _Lat;
   double get Lng => _Lng;
@@ -14,6 +16,8 @@ class LatLngProv with ChangeNotifier {
   double get accuracy => _accuracy;
   double get GpsSpeed => _GpsSpeed;
   double get Tick => _Tick;
+  double get GpsDirect => _GpsDirect;
+  String get GpsDirT => _GpsDirT;
 
   set Lat(double newLat) {
     _Lat = newLat;
@@ -42,6 +46,16 @@ class LatLngProv with ChangeNotifier {
 
   set Tick(double newTick) {
     _Tick = newTick;
+    notifyListeners();
+  }
+
+  set GpsDirect(double newGpsDirect) {
+    _GpsDirect = newGpsDirect;
+    notifyListeners();
+  }
+
+  set GpsDirT(String newGpsDirT) {
+    _GpsDirT = newGpsDirT;
     notifyListeners();
   }
 }

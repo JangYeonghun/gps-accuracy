@@ -13,7 +13,7 @@ class _LogWindowState extends State<LogWindow> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 435,
+      height: 420,
       padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Colors.black,

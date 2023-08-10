@@ -89,7 +89,7 @@ class _MapModuleState extends State<MapModule> {
             Positioned(
               bottom: 5,
               left: 70,
-              right: 50,
+              right: 55,
               child: LogWindow(),
             ),
         ],
@@ -111,6 +111,12 @@ class _MapModuleState extends State<MapModule> {
         infoWindow: InfoWindow(title: '현재 위치', snippet: '이동중'),
       );
     }
+
+    final Marker currentMarker = Marker(
+      markerId: MarkerId('currentLocation'),
+      position: currentLatLng,
+      //icon: ,
+    );
 
     if (_isTracking) {
       _goToMyLocation();
