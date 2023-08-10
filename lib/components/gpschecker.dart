@@ -41,7 +41,7 @@ class _GpsCheckerState extends State<GpsChecker> {
         TextButton(onPressed: (){
           click();
         },
-        child: Text('켰어요!'))
+            child: Text('켰어요!'))
       ],
     );
   }

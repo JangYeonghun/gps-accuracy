@@ -1,3 +1,4 @@
+import 'package:gps/components/gpsdirection.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gps/provider/LatLngProvider.dart';
@@ -45,7 +46,7 @@ class _GpsModuleState extends State<GpsModule> {
       DateTime now = DateTime.now();
       gpsProvider.Tick = now.hour * 1 + now.minute / 60 + now.second / 3600;
 
-      // Gps 기반 속도 측정
+      // Gps 기반 속도, 방향 측정
       if (GpsQueue.isNotEmpty) {
         final Distance distance = Distance();
         double OldLat = GpsQueue.removeFirst();
@@ -54,6 +55,8 @@ class _GpsModuleState extends State<GpsModule> {
         final double meter = distance(LatLng(OldLat, OldLng), LatLng(gpsProvider.Lat, gpsProvider.Lng));
         double t_t = gpsProvider.Tick - OldTm;
         gpsProvider.GpsSpeed = meter/t_t/1000;
+        gpsProvider.GpsDirect = GpsDirectionModule().calculateDirection(LatLng(OldLat, OldLng), LatLng(gpsProvider.Lat, gpsProvider.Lng));
+        gpsProvider.GpsDirT = GpsDirectionModule().Direction2Text(gpsProvider.GpsDirect);
       } else {
         gpsProvider.GpsSpeed = 0;
       }
@@ -72,7 +75,7 @@ class _GpsModuleState extends State<GpsModule> {
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
       child: Text(
-              '${context.watch<LatLngProv>().message}\n오차범위: ${context.watch<LatLngProv>().accuracy}m\n위치기반 속도: ${context.watch<LatLngProv>().GpsSpeed}km/h'),
+              '${context.watch<LatLngProv>().message}\n오차범위: ${context.watch<LatLngProv>().accuracy}m\n위치기반 속도: ${context.watch<LatLngProv>().GpsSpeed}km/h\n위치기반 방향: ${context.watch<LatLngProv>().GpsDirect}, ${context.watch<LatLngProv>().GpsDirT}'),
     );
   }
 }
