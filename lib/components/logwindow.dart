@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:gps/provider/LogProvider.dart';
+import 'package:gps/components/logger.dart';
 
 class LogWindow extends StatefulWidget {
   const LogWindow({Key? key}) : super(key: key);
@@ -10,21 +9,55 @@ class LogWindow extends StatefulWidget {
 }
 
 class _LogWindowState extends State<LogWindow> {
+  late ScrollController _scrollController; // ScrollController 추가
+
+  Future<String>? logDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController(); // ScrollController 초기화
+    logDataFuture = LogModule.readLogFile();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 420,
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: SingleChildScrollView(
-        child: Text(
-          '${context.watch<LogProv>().Log}',
-          style: TextStyle(color: Colors.white),
+    return Column(
+      children: [
+        Container(decoration: BoxDecoration(color: Colors.grey),
+            child: Text('보여지는 로그는 창을 연 시점의 로그입니다.')),
+        Container(
+          height: 320,
+          width: 500,
+          padding: EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: FutureBuilder<String>(
+            future: logDataFuture,
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                });
+
+                return SingleChildScrollView(
+                  controller: _scrollController, // ScrollController 할당
+                  child: Text(
+                    snapshot.data ?? '',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              }
+            },
+          ),
         ),
-      ),
+      ],
     );
   }
 }

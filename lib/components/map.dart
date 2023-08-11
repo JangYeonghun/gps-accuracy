@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gps/provider/LatLngProvider.dart';
+import 'package:gps/components/logger.dart';
 import 'package:gps/components/logwindow.dart';
 
 class MapModule extends StatefulWidget {
@@ -57,8 +58,13 @@ class _MapModuleState extends State<MapModule> {
             top: 16, // 버튼을 지도의 상단에 배치 (원하는 위치로 조정 가능)
             right: 16, // 버튼을 지도의 오른쪽에 배치 (원하는 위치로 조정 가능)
             child: ElevatedButton(
-              onPressed: _goToMyLocation,
-              child: Text('내 위치로 이동'),
+              onPressed: (){
+                LogModule.initializeLogFile();
+                setState(() {
+                  _showLog = false;
+                });
+                },
+              child: Text('로그 리셋'),
             ),
           ),
           Positioned(
@@ -87,9 +93,9 @@ class _MapModuleState extends State<MapModule> {
           ),
           if (_showLog)
             Positioned(
-              bottom: 5,
-              left: 70,
-              right: 55,
+              bottom: 90,
+              left: 5,
+              right: 5,
               child: LogWindow(),
             ),
         ],

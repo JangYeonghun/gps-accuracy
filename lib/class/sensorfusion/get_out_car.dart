@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:pedometer/pedometer.dart';
+import 'package:gps/provider/MoveProvider.dart';
+import 'package:provider/provider.dart';
 
 class GetOutCar extends StatefulWidget {
   @override
@@ -30,6 +32,7 @@ class _GetOutCarState extends State<GetOutCar> {
     setState(() {
       _status = event.status;
     });
+    Provider.of<MoveProv>(context, listen: false).MoveStat = _status;
   }
 
   void onPedestrianStatusError(error) {
@@ -38,6 +41,7 @@ class _GetOutCarState extends State<GetOutCar> {
       _status = 'Pedestrian Status not available';
     });
     print(_status);
+    Provider.of<MoveProv>(context, listen: false).MoveStat = _status;
   }
 
   void onStepCountError(error) {
