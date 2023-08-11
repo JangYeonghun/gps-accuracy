@@ -8,7 +8,7 @@ class LatLngProv with ChangeNotifier {
   double _GpsSpeed = 0;
   double _Tick = 0;
   double _GpsDirect = 0;
-  String _GpsDirT = '?';
+  String _GpsDirT = 'null';
 
   double get Lat => _Lat;
   double get Lng => _Lng;

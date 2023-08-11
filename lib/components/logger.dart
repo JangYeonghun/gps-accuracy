@@ -1,42 +1,80 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:gps/provider/LatLngProvider.dart';
-import 'package:gps/provider/LogProvider.dart'; // LogProvider를 import해야 합니다.
-import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
-import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
-import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
-import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
+import 'package:gps/provider/MoveProvider.dart';
+import 'package:logger/logger.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 int index = 1;
 
 class LogModule {
-  static void logging(BuildContext context) {
+  static final _logger = Logger();
+
+  static Future<void> logging(BuildContext context) async {
     final DateTime now = DateTime.now();
     final gpsProv = Provider.of<LatLngProv>(context, listen: false);
-    final accProv = Provider.of<AccelerometerProvider>(context, listen: false);
-    final uaccProv = Provider.of<UserAccelerometerProvider>(context, listen: false);
-    final gyProv = Provider.of<GyroscopeProvider>(context, listen: false);
-    final mgProv = Provider.of<MagnetometerProvider>(context, listen: false);
-    final logProv = Provider.of<LogProv>(context, listen: false);
+    final movProv = Provider.of<MoveProv>(context, listen: false);
 
-    print('======================================================================================================');
-    print('$now     [Log$index]');
-    print('Coord: ${gpsProv.Lat}, ${gpsProv.Lng}');
-    print('Accel: ${accProv.accelerometerValues?[0]}, ${accProv.accelerometerValues?[1]}, ${accProv.accelerometerValues?[2]}');
-    print('U_Accel: ${uaccProv.userAccelerometerValues?[0]}, ${uaccProv.userAccelerometerValues?[1]}, ${uaccProv.userAccelerometerValues?[2]}');
-    print('Gyro: ${gyProv.userGyroscopeValues?[0]}, ${gyProv.userGyroscopeValues?[1]}, ${gyProv.userGyroscopeValues?[2]}');
-    print('Mag: ${mgProv.userMagnetometerValues?[0]}, ${mgProv.userMagnetometerValues?[1]}, ${mgProv.userMagnetometerValues?[2]}');
-    print('======================================================================================================');
+    final logMessage = '''
+=====================================
+$now     [Log$index]
 
-    logProv.Log += '===============================\n';
-    logProv.Log += '$now     [Log$index]\n\n';
-    logProv.Log += '[Location]\nLat: ${gpsProv.Lat}, Lng: ${gpsProv.Lng}\n\n';
-    logProv.Log += '[Accelerometer]\nX: ${accProv.accelerometerValues?[0]}\nY: ${accProv.accelerometerValues?[1]}\nZ: ${accProv.accelerometerValues?[2]}\n\n';
-    logProv.Log += '[Accelerometer_User]\nX: ${uaccProv.userAccelerometerValues?[0]}\nY: ${uaccProv.userAccelerometerValues?[1]}\nZ: ${uaccProv.userAccelerometerValues?[2]}\n\n';
-    logProv.Log += '[Gyroscope]\nX: ${gyProv.userGyroscopeValues?[0]}\nY: ${gyProv.userGyroscopeValues?[1]}\nZ: ${gyProv.userGyroscopeValues?[2]}\n\n';
-    logProv.Log += '[Magentometer]\nX: ${mgProv.userMagnetometerValues?[0]}\nY: ${mgProv.userMagnetometerValues?[1]}\nZ: ${mgProv.userMagnetometerValues?[2]}\n';
-    logProv.Log += '===============================\n\n';
+Latitude: ${gpsProv.Lat}
+Longitude: ${gpsProv.Lng}
+Accuracy: ${gpsProv.accuracy}
+Speed: ${gpsProv.GpsSpeed}
+Direction: ${gpsProv.GpsDirect}, ${gpsProv.GpsDirT}
+Movement Status: ${movProv.MoveStat}
+=====================================
+''';
+
+    _logger.i(logMessage);
+
+    await _writeToFile(logMessage); // Save log to file
 
     index += 1;
   }
+
+  static Future<void> _writeToFile(String content) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/logs.txt');
+
+      if (!file.existsSync()) {
+        file.createSync(recursive: true);
+      }
+
+      await file.writeAsString(content, mode: FileMode.append);
+
+      print('Log file saved at: ${file.path}');
+    } catch (e) {
+      print('Error writing to file: $e');
+    }
+  }
+
+  static Future<String> readLogFile() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/logs.txt');
+
+      if (await file.exists()) {
+        return await file.readAsString();
+      } else {
+        return 'Log file not found.';
+      }
+    } catch (e) {
+      return 'Error reading log: $e';
+    }
+  }
+
+  static Future<void> initializeLogFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/logs.txt');
+
+    if (await file.exists()) {
+      await file.writeAsString('');
+    }
+  }
+
 }

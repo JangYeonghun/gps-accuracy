@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gps/class/sensorfusion/get_out_car.dart';
-import 'package:gps/components/gps.dart';
 import 'package:gps/components/permission.dart';
+import 'package:gps/provider/MoveProvider.dart';
 import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
-import 'package:gps/provider/LogProvider.dart';
 import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
 import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,12 +13,12 @@ import 'components/accelerometer_frame/accelerometer_frame.dart';
 import 'components/accelerometer_frame/useraccelerometer_frame.dart';
 import 'components/gyroscope_frame/gyroscope_frame.dart';
 import 'components/magnetometer_frame/magnetometer_frame.dart';
-import 'package:gps/class/sensorfusion/dead_reckoning.dart';
 import 'package:gps/components/gpschecker.dart';
 // 클래스 파일로 로직 이동
 // home: DeadReckoningApp(), 이렇게 부르면 됌
 
 void main() async {
+  PermissionModule.checkPermission();
   runApp(
     MultiProvider(
       providers: [
@@ -28,12 +27,11 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AccelerometerProvider()),
         ChangeNotifierProvider(create: (_) => GyroscopeProvider()),
         ChangeNotifierProvider(create: (_) => MagnetometerProvider()),
-        ChangeNotifierProvider(create: (_) => LogProv()),
+        ChangeNotifierProvider(create: (_) => MoveProv()),
       ],
       child: MyApp(),
     ),
   );
-  PermissionModule.checkPermission();
 }
 
 class MyApp extends StatefulWidget {
