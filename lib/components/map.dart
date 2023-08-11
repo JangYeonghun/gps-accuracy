@@ -20,7 +20,6 @@ class _MapModuleState extends State<MapModule> {
   late GoogleMapController mapController;
   bool _isTracking = true;
   bool _showLog = false;
-  Timer? _timer;
   final LatLng _center = LatLng(0, 0);
 
   Uint8List? customMarkerIcon;
@@ -138,10 +137,17 @@ class _MapModuleState extends State<MapModule> {
   }
 
   Future<void> _goToMyLocation() async {
-    final LatLngProv gpsProvider = Provider.of<LatLngProv>(context, listen: false);
-    final LatLng currentLatLng = LatLng(gpsProvider.Lat, gpsProvider.Lng);
-
-    mapController.animateCamera(CameraUpdate.newLatLngZoom(currentLatLng, 17));
+    final gpsProv = Provider.of<LatLngProv>(context, listen: false);
+    final LatLng currentLatLng = LatLng(gpsProv.Lat, gpsProv.Lng);
+    mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+            CameraPosition(
+        target: currentLatLng,
+        zoom: 17,
+        bearing: gpsProv.GpsDirect
+        )
+      )
+    );
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
