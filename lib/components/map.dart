@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:gps/provider/LatLngProvider.dart';
 import 'package:gps/components/logger.dart';
 import 'package:gps/components/logwindow.dart';
+import 'package:gps/provider/CompassProvider.dart';
+import 'package:gps/components/compass.dart';
 
 class MapModule extends StatefulWidget {
   const MapModule({Key? key}) : super(key: key);
@@ -21,6 +23,7 @@ class _MapModuleState extends State<MapModule> {
   bool _isTracking = true;
   bool _showLog = false;
   final LatLng _center = LatLng(0, 0);
+  late Timer _rotationTimer;
 
   Uint8List? customMarkerIcon;
 
@@ -29,6 +32,7 @@ class _MapModuleState extends State<MapModule> {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _loadCustomMarker();
+      _startRotationTimer();
     });
   }
 
@@ -97,6 +101,7 @@ class _MapModuleState extends State<MapModule> {
               right: 5,
               child: LogWindow(),
             ),
+          CompassModule(),
         ],
       ),
     );
@@ -123,10 +128,6 @@ class _MapModuleState extends State<MapModule> {
       //icon: ,
     );
 
-    if (_isTracking) {
-      _goToMyLocation();
-    }
-
     final markers = <Marker>{};
 
     if (customMarker != null) {
@@ -137,17 +138,32 @@ class _MapModuleState extends State<MapModule> {
   }
 
   Future<void> _goToMyLocation() async {
+    final compProv = Provider.of<CompProv>(context, listen: false);
     final gpsProv = Provider.of<LatLngProv>(context, listen: false);
     final LatLng currentLatLng = LatLng(gpsProv.Lat, gpsProv.Lng);
     mapController.animateCamera(
         CameraUpdate.newCameraPosition(
             CameraPosition(
-        target: currentLatLng,
-        zoom: 17,
-        bearing: gpsProv.GpsDirect
+                target: currentLatLng,
+                zoom: 17,
+                bearing: compProv.Compass
+            )
         )
-      )
     );
+  }
+
+  void _startRotationTimer() {
+    _rotationTimer = Timer.periodic(Duration(milliseconds: 1200), (timer) {
+      if (_isTracking) {
+        _goToMyLocation();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _rotationTimer.cancel();
+    super.dispose();
   }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {

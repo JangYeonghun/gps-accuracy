@@ -7,6 +7,8 @@ import 'dart:collection';
 import 'package:latlong2/latlong.dart';
 import 'package:gps/components/logger.dart';
 
+import 'package:gps/provider/CompassProvider.dart';
+
 class GpsModule extends StatefulWidget {
   @override
   _GpsModuleState createState() => _GpsModuleState();
@@ -56,7 +58,7 @@ class _GpsModuleState extends State<GpsModule> {
         double t_t = gpsProvider.Tick - OldTm;
         gpsProvider.GpsSpeed = meter/t_t/1000;
         gpsProvider.GpsDirect = GpsDirectionModule().calculateDirection(LatLng(OldLat, OldLng), LatLng(gpsProvider.Lat, gpsProvider.Lng));
-        gpsProvider.GpsDirT = GpsDirectionModule().Direction2Text(gpsProvider.GpsDirect);
+        gpsProvider.GpsD2T = GpsDirectionModule().Direction2Text(gpsProvider.GpsDirect);
       } else {
         gpsProvider.GpsSpeed = 0;
       }
@@ -75,7 +77,7 @@ class _GpsModuleState extends State<GpsModule> {
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
       child: Text(
-              '${context.watch<LatLngProv>().message}\n오차범위: ${context.watch<LatLngProv>().accuracy}m\n위치기반 속도: ${context.watch<LatLngProv>().GpsSpeed}km/h\n위치기반 방향: ${context.watch<LatLngProv>().GpsDirect}, ${context.watch<LatLngProv>().GpsDirT}'),
+              '${context.watch<LatLngProv>().message}\n오차범위: ${context.watch<LatLngProv>().accuracy}m\n위치기반 속도: ${context.watch<LatLngProv>().GpsSpeed}km/h\n위치기반 이동 방향: ${context.watch<LatLngProv>().GpsDirect}, ${context.watch<LatLngProv>().GpsD2T}\n방향: ${context.watch<CompProv>().Compass}, ${context.watch<CompProv>().CompassText}'),
     );
   }
 }
