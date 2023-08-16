@@ -45,6 +45,7 @@ dependencies:
   url_launcher:
   logger:
   path_provider:
+  flutter_compass:
 
 
   # The following adds the Cupertino Icons font to your application.

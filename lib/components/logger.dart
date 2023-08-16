@@ -5,6 +5,7 @@ import 'package:gps/provider/MoveProvider.dart';
 import 'package:logger/logger.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:gps/provider/CompassProvider.dart';
 
 int index = 1;
 
@@ -15,6 +16,7 @@ class LogModule {
     final DateTime now = DateTime.now();
     final gpsProv = Provider.of<LatLngProv>(context, listen: false);
     final movProv = Provider.of<MoveProv>(context, listen: false);
+    final compProv = Provider.of<CompProv>(context, listen: false);
 
     final logMessage = '''
 =====================================
@@ -24,7 +26,8 @@ Latitude: ${gpsProv.Lat}
 Longitude: ${gpsProv.Lng}
 Accuracy: ${gpsProv.accuracy}
 Speed: ${gpsProv.GpsSpeed}
-Direction: ${gpsProv.GpsDirect}, ${gpsProv.GpsDirT}
+Moving Direction: ${gpsProv.GpsDirect}, ${gpsProv.GpsD2T}
+View Direction: ${compProv.Compass}, ${compProv.CompassText}
 Movement Status: ${movProv.MoveStat}
 =====================================
 ''';

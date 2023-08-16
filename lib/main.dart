@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gps/class/sensorfusion/get_out_car.dart';
 import 'package:gps/components/permission.dart';
+import 'package:gps/provider/CompassProvider.dart';
 import 'package:gps/provider/MoveProvider.dart';
 import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
 import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
@@ -28,6 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => GyroscopeProvider()),
         ChangeNotifierProvider(create: (_) => MagnetometerProvider()),
         ChangeNotifierProvider(create: (_) => MoveProv()),
+        ChangeNotifierProvider(create: (_) => CompProv()),
       ],
       child: MyApp(),
     ),
