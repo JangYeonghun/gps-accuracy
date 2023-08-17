@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gps/components/logger.dart';
+import 'package:gps/components/log/logger.dart';
 
 class LogWindow extends StatefulWidget {
   const LogWindow({Key? key}) : super(key: key);

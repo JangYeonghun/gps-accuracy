@@ -1,35 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:gps/class/sensorfusion/get_out_car.dart';
 import 'package:gps/components/permission.dart';
-import 'package:gps/provider/CompassProvider.dart';
-import 'package:gps/provider/MoveProvider.dart';
 import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
 import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
 import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:gps/provider/LatLngProvider.dart';
 import 'package:gps/components/map.dart';
 import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
 import 'components/accelerometer_frame/accelerometer_frame.dart';
 import 'components/accelerometer_frame/useraccelerometer_frame.dart';
 import 'components/gyroscope_frame/gyroscope_frame.dart';
 import 'components/magnetometer_frame/magnetometer_frame.dart';
-import 'package:gps/components/gpschecker.dart';
+import 'package:gps/components/gps/gpschecker.dart';
 // 클래스 파일로 로직 이동
 // home: DeadReckoningApp(), 이렇게 부르면 됌
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   PermissionModule.checkPermission();
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LatLngProv()),
         ChangeNotifierProvider(create: (_) => UserAccelerometerProvider()),
         ChangeNotifierProvider(create: (_) => AccelerometerProvider()),
         ChangeNotifierProvider(create: (_) => GyroscopeProvider()),
         ChangeNotifierProvider(create: (_) => MagnetometerProvider()),
-        ChangeNotifierProvider(create: (_) => MoveProv()),
-        ChangeNotifierProvider(create: (_) => CompProv()),
       ],
       child: MyApp(),
     ),

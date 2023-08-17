@@ -4,11 +4,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:gps/provider/LatLngProvider.dart';
-import 'package:gps/components/logger.dart';
-import 'package:gps/components/logwindow.dart';
-import 'package:gps/provider/CompassProvider.dart';
+import 'package:gps/components/gps/gps.dart';
+import 'package:gps/components/log/logger.dart';
+import 'package:gps/components/log/logwindow.dart';
 import 'package:gps/components/compass.dart';
 
 class MapModule extends StatefulWidget {
@@ -108,8 +106,7 @@ class _MapModuleState extends State<MapModule> {
   }
 
   Set<Marker> _createMarkers() {
-    final LatLngProv gpsProvider = Provider.of<LatLngProv>(context, listen: true);
-    final LatLng currentLatLng = LatLng(gpsProvider.Lat, gpsProvider.Lng);
+    final LatLng currentLatLng = LatLng(Lat, Lng);
 
     Marker? customMarker;
 
@@ -122,12 +119,6 @@ class _MapModuleState extends State<MapModule> {
       );
     }
 
-    final Marker currentMarker = Marker(
-      markerId: MarkerId('currentLocation'),
-      position: currentLatLng,
-      //icon: ,
-    );
-
     final markers = <Marker>{};
 
     if (customMarker != null) {
@@ -138,15 +129,13 @@ class _MapModuleState extends State<MapModule> {
   }
 
   Future<void> _goToMyLocation() async {
-    final compProv = Provider.of<CompProv>(context, listen: false);
-    final gpsProv = Provider.of<LatLngProv>(context, listen: false);
-    final LatLng currentLatLng = LatLng(gpsProv.Lat, gpsProv.Lng);
+    final LatLng currentLatLng = LatLng(Lat, Lng);
     mapController.animateCamera(
         CameraUpdate.newCameraPosition(
             CameraPosition(
                 target: currentLatLng,
                 zoom: 17,
-                bearing: compProv.Compass
+                bearing: compDegree
             )
         )
     );
@@ -157,6 +146,8 @@ class _MapModuleState extends State<MapModule> {
       if (_isTracking) {
         _goToMyLocation();
       }
+      setState(() {
+      });
     });
   }
 

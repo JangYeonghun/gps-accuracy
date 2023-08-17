@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:gps/components/gps.dart';
+import 'package:gps/components/gps/gps.dart';
 
 class GpsChecker extends StatefulWidget {
   const GpsChecker({super.key});

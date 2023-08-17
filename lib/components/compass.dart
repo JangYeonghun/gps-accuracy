@@ -1,8 +1,9 @@
 import 'package:flutter_compass/flutter_compass.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:gps/provider/CompassProvider.dart';
-import 'package:gps/components/gpsdirection.dart';
+import 'package:gps/components/gps/gpsdirection.dart';
+
+double compDegree = 0;
+String compText = 'null';
 
 class CompassModule extends StatefulWidget {
   @override
@@ -21,10 +22,8 @@ class _CompassModuleState extends State<CompassModule> {
 
     FlutterCompass.events?.listen((event) {
       double? compassHeading = event.heading;
-      final compProv = Provider.of<CompProv>(context, listen: false);
-      compProv.Compass = (compassHeading! + 360) % 360;
-      ;
-      compProv.CompassText = GpsDirectionModule().Direction2Text(compProv.Compass);
+      compDegree = (compassHeading! + 360) % 360;
+      compText = GpsDirectionModule().D2T(compDegree);
     });
   }
   
