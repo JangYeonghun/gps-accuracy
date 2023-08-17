@@ -17,7 +17,7 @@ import 'package:gps/components/gps/gpschecker.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PermissionModule.checkPermission();
+  PermissionModule.checkPermissions();
   runApp(
     MultiProvider(
       providers: [

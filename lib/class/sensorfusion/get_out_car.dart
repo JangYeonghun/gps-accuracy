@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:pedometer/pedometer.dart';
 
-String moveStat = 'null';
+String? moveStat = 'null';
 
 class GetOutCar extends StatefulWidget {
   @override
