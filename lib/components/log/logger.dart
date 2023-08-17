@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-import 'package:gps/provider/LatLngProvider.dart';
-import 'package:gps/provider/MoveProvider.dart';
+import 'package:gps/class/sensorfusion/get_out_car.dart';
+import 'package:gps/components/gps/gps.dart';
 import 'package:logger/logger.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:gps/provider/CompassProvider.dart';
+import 'package:gps/components/compass.dart';
 
 int index = 1;
 
@@ -14,21 +13,18 @@ class LogModule {
 
   static Future<void> logging(BuildContext context) async {
     final DateTime now = DateTime.now();
-    final gpsProv = Provider.of<LatLngProv>(context, listen: false);
-    final movProv = Provider.of<MoveProv>(context, listen: false);
-    final compProv = Provider.of<CompProv>(context, listen: false);
 
     final logMessage = '''
 =====================================
 $now     [Log$index]
 
-Latitude: ${gpsProv.Lat}
-Longitude: ${gpsProv.Lng}
-Accuracy: ${gpsProv.accuracy}
-Speed: ${gpsProv.GpsSpeed}
-Moving Direction: ${gpsProv.GpsDirect}, ${gpsProv.GpsD2T}
-View Direction: ${compProv.Compass}, ${compProv.CompassText}
-Movement Status: ${movProv.MoveStat}
+Latitude: $Lat
+Longitude: $Lng
+Accuracy: $accuracy
+Speed: $gSpeed
+Moving Direction: $gDirect, $gD2T
+View Direction: $compDegree, $compText
+Movement Status: $moveStat
 =====================================
 ''';
 
