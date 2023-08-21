@@ -46,6 +46,8 @@ dependencies:
   logger:
   path_provider:
   flutter_compass:
+  device_info_plus:
+  shared_preferences:
 
 
   # The following adds the Cupertino Icons font to your application.
