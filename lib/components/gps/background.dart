@@ -34,7 +34,9 @@ class _BackgroundModuleState extends State<BackgroundModule> {
   void initState() {
     print('================================================check');
     super.initState();
-    initializeService();
+
+    _initializeService();
+
     FlutterBackgroundService().on('update_gps').listen((event) {
       setState(() {
         Lat = event!['Lat'];
@@ -54,7 +56,7 @@ class _BackgroundModuleState extends State<BackgroundModule> {
     });
   }
 
-  Future<void> initializeService() async {
+  Future<void> _initializeService() async {
     final service = FlutterBackgroundService();
     print('================================================check2');
 
@@ -113,6 +115,7 @@ void onStart(ServiceInstance service) {
     preferences.setString('hello', 'world');
   });
 
+  // GPS
   StreamSubscription<Position> _positionStream =
   Geolocator.getPositionStream(locationSettings: locationSettings)
       .listen((Position position) {
@@ -121,8 +124,6 @@ void onStart(ServiceInstance service) {
     Lng = position.longitude;
     accuracy = position.accuracy;
     tick = now.hour * 1 + now.minute / 60 + now.second / 3600;
-
-    print('================================================check4');
 
     if (GpsQueue.isNotEmpty) {
       final Distance distance = Distance();
@@ -146,9 +147,9 @@ void onStart(ServiceInstance service) {
       'update_gps',
       {
         'datetime': DateTime.now().toIso8601String(),
-        'Lat': position.latitude,
-        'Lng': position.longitude,
-        'accuracy': position.accuracy,
+        'Lat': Lat,
+        'Lng': Lng,
+        'accuracy': accuracy,
         'gSpeed': gSpeed,
         'gDirect': gDirect,
         'gD2T': gD2T,
@@ -170,8 +171,8 @@ void onStart(ServiceInstance service) {
         'compText': compText
       },
     );
-
   });
+
 
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
