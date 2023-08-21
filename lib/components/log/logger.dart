@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:gps/class/sensorfusion/get_out_car.dart';
-import 'package:gps/components/gps/gps.dart';
+import 'package:gps/components/gps/background.dart';
 import 'package:logger/logger.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:gps/components/compass.dart';
+
 
 int index = 1;
 
 class LogModule {
   static final _logger = Logger();
 
-  static Future<void> logging(BuildContext context) async {
+  static Future<void> logging() async {
     final DateTime now = DateTime.now();
 
     final logMessage = '''
@@ -20,8 +19,8 @@ $now     [Log$index]
 
 Latitude: $Lat
 Longitude: $Lng
-Accuracy: $accuracy
-Speed: $gSpeed
+Accuracy: ${accuracy}m
+Speed: ${gSpeed}Km/h
 Moving Direction: $gDirect, $gD2T
 View Direction: $compDegree, $compText
 Movement Status: $moveStat

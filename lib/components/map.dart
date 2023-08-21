@@ -4,10 +4,10 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:gps/components/gps/gps.dart';
+import 'package:gps/components/gps/background.dart';
 import 'package:gps/components/log/logger.dart';
 import 'package:gps/components/log/logwindow.dart';
-import 'package:gps/components/compass.dart';
+
 
 class MapModule extends StatefulWidget {
   const MapModule({Key? key}) : super(key: key);
@@ -99,7 +99,7 @@ class _MapModuleState extends State<MapModule> {
               right: 5,
               child: LogWindow(),
             ),
-          CompassModule(),
+          //CompassModule(),
         ],
       ),
     );
