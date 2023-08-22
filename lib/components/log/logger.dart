@@ -1,5 +1,5 @@
 import 'package:gps/class/sensorfusion/get_out_car.dart';
-import 'package:gps/components/compass_stream.dart';
+import 'package:gps/components/compass/compass_stream.dart';
 import 'package:gps/components/gps/gps_stream.dart';
 import 'package:logger/logger.dart';
 import 'dart:io';

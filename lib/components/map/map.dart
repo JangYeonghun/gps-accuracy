@@ -3,10 +3,10 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:gps/components/compass_stream.dart';
+import 'package:gps/components/compass/compass_stream.dart';
 import 'package:gps/components/gps/gps_stream.dart';
 import 'package:gps/components/log/logger.dart';
-import 'package:gps/components/log/log_window.dart';
+import 'package:gps/components/log/log_frame.dart';
 
 
 class MapModule extends StatefulWidget {

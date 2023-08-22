@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gps/class/sensorfusion/get_out_car.dart';
-import 'package:gps/components/permission.dart';
+import 'package:gps/utility/permission.dart';
 import 'package:gps/provider/accelerometer_provider/accelerometer_provider.dart';
 import 'package:gps/provider/gyroscope_provider/gyroscope_provider.dart';
 import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:gps/components/map.dart';
+import 'package:gps/components/map/map.dart';
 import 'package:gps/provider/accelerometer_provider/useraccelerometer_provider.dart';
 import 'components/accelerometer_frame/accelerometer_frame.dart';
 import 'components/accelerometer_frame/useraccelerometer_frame.dart';

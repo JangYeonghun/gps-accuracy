@@ -1,4 +1,4 @@
-import 'package:gps/components/compass_stream.dart';
+import 'package:gps/components/compass/compass_stream.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
