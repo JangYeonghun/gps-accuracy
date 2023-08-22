@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gps/components/compass_stream.dart';
+import 'package:gps/components/compass/compass_stream.dart';
 import 'package:gps/components/gps/gps_stream.dart';
 
 Widget BackgroundDataFrame() {

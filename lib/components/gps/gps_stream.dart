@@ -3,6 +3,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gps/components/gps/gps_direction.dart';
 import 'package:gps/components/log/logger.dart';
+import 'package:gps/utility/direction_to_text.dart';
 import 'package:latlong2/latlong.dart';
 
 double lat = 0;
@@ -40,9 +41,9 @@ void onStartGps(ServiceInstance service) {
           LatLng(oldLat, oldLng), LatLng(lat, lng));
       double tT = tick - oldTick;
       gSpeed = meter / tT / 1000;
-      gDirect = GpsDirectionModule().calculateDirection(
+      gDirect = calculateDirection(
           LatLng(oldLat, oldLng), LatLng(lat, lng));
-      gD2T = GpsDirectionModule().directionToText(gDirect);
+      gD2T = directionToText(gDirect);
     } else {
       gSpeed = 0;
     }
