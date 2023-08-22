@@ -6,10 +6,10 @@ class MagnetometerFrame extends StatefulWidget {
   const MagnetometerFrame({Key? key}) : super(key: key);
 
   @override
-  _MagnetometerFrameState createState() => _MagnetometerFrameState();
+  MagnetometerFrameState createState() => MagnetometerFrameState();
 }
 
-class _MagnetometerFrameState extends State<MagnetometerFrame> {
+class MagnetometerFrameState extends State<MagnetometerFrame> {
   @override
   Widget build(BuildContext context) {
     final userMagnetometer =

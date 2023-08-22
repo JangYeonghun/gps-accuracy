@@ -1,5 +1,5 @@
 import 'package:gps/class/sensorfusion/get_out_car.dart';
-import 'package:gps/components/gps/background.dart';
+import 'package:gps/components/background/background.dart';
 import 'package:logger/logger.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -17,8 +17,8 @@ class LogModule {
 =====================================
 $now     [Log$index]
 
-Latitude: $Lat
-Longitude: $Lng
+Latitude: $lat
+Longitude: $lng
 Accuracy: ${accuracy}m
 Speed: ${gSpeed}Km/h
 Moving Direction: $gDirect, $gD2T

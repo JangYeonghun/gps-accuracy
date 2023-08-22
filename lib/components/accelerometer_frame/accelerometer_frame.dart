@@ -6,15 +6,15 @@ class AccelerometerFrame extends StatefulWidget {
   const AccelerometerFrame({Key? key}) : super(key: key);
 
   @override
-  _AccelerometerFrameState createState() => _AccelerometerFrameState();
+  AccelerometerFrameState createState() => AccelerometerFrameState();
 }
 
-class _AccelerometerFrameState extends State<AccelerometerFrame> {
+class AccelerometerFrameState extends State<AccelerometerFrame> {
   @override
   Widget build(BuildContext context) {
-    final Accelerometer =
+    final accelerometer =
         Provider.of<AccelerometerProvider>(context).accelerometerValues;
-    final AccelerometerAsString = Accelerometer
+    final accelerometerToString = accelerometer
         ?.map((double v) => v.toStringAsFixed(1))
         .toList();
 
@@ -26,7 +26,7 @@ class _AccelerometerFrameState extends State<AccelerometerFrame> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: Text('Accelerometer: $AccelerometerAsString'),
+        child: Text('Accelerometer: $accelerometerToString'),
       ),
     );
   }

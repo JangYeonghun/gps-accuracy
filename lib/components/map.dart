@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:gps/components/gps/background.dart';
+import 'package:gps/components/background/background.dart';
 import 'package:gps/components/log/logger.dart';
 import 'package:gps/components/log/logwindow.dart';
 
@@ -13,10 +12,10 @@ class MapModule extends StatefulWidget {
   const MapModule({Key? key}) : super(key: key);
 
   @override
-  _MapModuleState createState() => _MapModuleState();
+  MapModuleState createState() => MapModuleState();
 }
 
-class _MapModuleState extends State<MapModule> {
+class MapModuleState extends State<MapModule> {
   late GoogleMapController mapController;
   bool _isTracking = true;
   bool _showLog = false;
@@ -28,7 +27,7 @@ class _MapModuleState extends State<MapModule> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadCustomMarker();
       _startRotationTimer();
     });
@@ -106,7 +105,7 @@ class _MapModuleState extends State<MapModule> {
   }
 
   Set<Marker> _createMarkers() {
-    final LatLng currentLatLng = LatLng(Lat, Lng);
+    final LatLng currentLatLng = LatLng(lat, lng);
 
     Marker? customMarker;
 
@@ -129,7 +128,7 @@ class _MapModuleState extends State<MapModule> {
   }
 
   Future<void> _goToMyLocation() async {
-    final LatLng currentLatLng = LatLng(Lat, Lng);
+    final LatLng currentLatLng = LatLng(lat, lng);
     mapController.animateCamera(
         CameraUpdate.newCameraPosition(
             CameraPosition(

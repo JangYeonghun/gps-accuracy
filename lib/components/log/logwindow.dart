@@ -42,7 +42,7 @@ class _LogWindowState extends State<LogWindow> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
                   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
                 });
 

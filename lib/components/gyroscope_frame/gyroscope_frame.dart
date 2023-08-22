@@ -6,10 +6,10 @@ class GyroscopeFrame extends StatefulWidget {
   const GyroscopeFrame({Key? key}) : super(key: key);
 
   @override
-  _GyroscopeFrameState createState() => _GyroscopeFrameState();
+  GyroscopeFrameState createState() => GyroscopeFrameState();
 }
 
-class _GyroscopeFrameState extends State<GyroscopeFrame> {
+class GyroscopeFrameState extends State<GyroscopeFrame> {
   @override
   Widget build(BuildContext context) {
     final userGyroscope =

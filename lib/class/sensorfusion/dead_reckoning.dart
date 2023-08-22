@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:gps/provider/magnetometer_provider/magnetometer_provider.dart';
 
 class DeadReckoningApp extends StatelessWidget {
+  const DeadReckoningApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return _DeadReckoningAppState();
