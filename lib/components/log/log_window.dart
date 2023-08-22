@@ -27,7 +27,7 @@ class _LogWindowState extends State<LogWindow> {
         Container(decoration: BoxDecoration(color: Colors.grey),
             child: Text('보여지는 로그는 창을 연 시점의 로그입니다.')),
         Container(
-          height: 320,
+          height: 310,
           width: 500,
           padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(

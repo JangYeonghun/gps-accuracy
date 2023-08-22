@@ -1,10 +1,5 @@
-import 'package:flutter_compass/flutter_compass.dart';
-import 'package:gps/components/gps/gpsdirection.dart';
+import 'package:gps/components/compass_stream.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'dart:collection';
-import 'package:latlong2/latlong.dart';
-import 'package:gps/components/log/logger.dart';
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
@@ -12,16 +7,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-double lat = 0;
-double lng = 0;
-double accuracy = 0;
-double gSpeed = 0;
-double gDirect = 0;
-String gD2T = 'null';
-
-double compDegree = 0;
-String compText = 'null';
+import 'package:gps/components/gps/gps_stream.dart';
 
 class BackgroundModule extends StatefulWidget {
   const BackgroundModule({Key? key}) : super(key: key);
@@ -34,7 +20,6 @@ class BackgroundModuleState extends State<BackgroundModule> {
 
   @override
   void initState() {
-    print('================================================check');
     super.initState();
 
     _initializeService();
@@ -60,22 +45,20 @@ class BackgroundModuleState extends State<BackgroundModule> {
 
   Future<void> _initializeService() async {
     final service = FlutterBackgroundService();
-    print('================================================check2');
 
     await service.configure(
       androidConfiguration: AndroidConfiguration(
-        onStart: onStart,
+        onStart: onStartBackground,
         autoStart: true,
         isForegroundMode: true,
         foregroundServiceNotificationId: 888,
       ),
       iosConfiguration: IosConfiguration(
         autoStart: true,
-        onForeground: onStart,
+        onForeground: onStartBackground,
         onBackground: onIosBackground,
       ),
     );
-    print('================================================check3');
 
     service.startService();
   }
@@ -95,84 +78,22 @@ class BackgroundModuleState extends State<BackgroundModule> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.fromSize(
-      child: Text(
-          '위도: $lat, 경도: $lng\n오차범위: ${accuracy}m\n위치기반 속도: ${gSpeed}km/h\n위치기반 이동 방향: $gDirect, $gD2T\n방향: $compDegree, $compText'),
-    );
+    return SizedBox();
   }
 }
 
-Queue<double> gpsQueue = ListQueue<double>(3);
-double tick = 0;
 
-final LocationSettings locationSettings = LocationSettings(
-  accuracy: LocationAccuracy.bestForNavigation,
-  distanceFilter: 1,
-);
+// Background
+void onStartBackground(ServiceInstance service) {
 
-void onStart(ServiceInstance service) {
   DartPluginRegistrant.ensureInitialized();
 
   SharedPreferences.getInstance().then((preferences) {
     preferences.setString('hello', 'world');
   });
 
-  // GPS
-  //StreamSubscription<Position> _positionStream =
-  Geolocator.getPositionStream(locationSettings: locationSettings)
-      .listen((Position position) {
-    DateTime now = DateTime.now();
-    lat = position.latitude;
-    lng = position.longitude;
-    accuracy = position.accuracy;
-    tick = now.hour * 1 + now.minute / 60 + now.second / 3600;
-
-    if (gpsQueue.isNotEmpty) {
-      final Distance distance = Distance();
-      double oldLat = gpsQueue.removeFirst();
-      double oldLng = gpsQueue.removeFirst();
-      double oldTick = gpsQueue.removeFirst();
-      final double meter = distance(
-          LatLng(oldLat, oldLng), LatLng(lat, lng));
-      double tT = tick - oldTick;
-      gSpeed = meter / tT / 1000;
-      gDirect = GpsDirectionModule().calculateDirection(
-          LatLng(oldLat, oldLng), LatLng(lat, lng));
-      gD2T = GpsDirectionModule().directionToText(gDirect);
-    } else {
-      gSpeed = 0;
-    }
-    gpsQueue.addAll([lat, lng, tick]);
-    LogModule.logging();
-
-    service.invoke(
-      'update_gps',
-      {
-        'lat': lat,
-        'lng': lng,
-        'accuracy': accuracy,
-        'gSpeed': gSpeed,
-        'gDirect': gDirect,
-        'gD2T': gD2T,
-        'compDegree': compDegree,
-        'compText': compText
-      },
-    );
-  });
-
-  // Compass
-  FlutterCompass.events?.listen((event) {
-    double? compassHeading = event.heading;
-    compDegree = (compassHeading! + 360) % 360;
-    compText = GpsDirectionModule().directionToText(compDegree);
-    service.invoke(
-      'update_compass',
-      {
-        'compDegree': compDegree,
-        'compText': compText
-      },
-    );
-  });
+  onStartGps(service);
+  onStartCompass(service);
 
 
   if (service is AndroidServiceInstance) {

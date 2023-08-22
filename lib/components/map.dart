@@ -3,9 +3,10 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:gps/components/background/background.dart';
+import 'package:gps/components/compass_stream.dart';
+import 'package:gps/components/gps/gps_stream.dart';
 import 'package:gps/components/log/logger.dart';
-import 'package:gps/components/log/logwindow.dart';
+import 'package:gps/components/log/log_window.dart';
 
 
 class MapModule extends StatefulWidget {
@@ -19,7 +20,7 @@ class MapModuleState extends State<MapModule> {
   late GoogleMapController mapController;
   bool _isTracking = true;
   bool _showLog = false;
-  final LatLng _center = LatLng(0, 0);
+  final LatLng _center = LatLng(lat, lng);
   late Timer _rotationTimer;
 
   Uint8List? customMarkerIcon;
@@ -127,25 +128,26 @@ class MapModuleState extends State<MapModule> {
     return markers;
   }
 
-  Future<void> _goToMyLocation() async {
+  void _goToMyLocation() {
     final LatLng currentLatLng = LatLng(lat, lng);
+
     mapController.animateCamera(
         CameraUpdate.newCameraPosition(
             CameraPosition(
                 target: currentLatLng,
                 zoom: 17,
-                bearing: compDegree
-            )
+                bearing: compDegree,
+            ),
         )
     );
   }
 
   void _startRotationTimer() {
-    _rotationTimer = Timer.periodic(Duration(milliseconds: 1200), (timer) {
-      if (_isTracking) {
-        _goToMyLocation();
-      }
+    _rotationTimer = Timer.periodic(Duration(milliseconds: 1100), (timer) {
       setState(() {
+        if (_isTracking) {
+          _goToMyLocation();
+        }
       });
     });
   }

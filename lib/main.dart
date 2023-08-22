@@ -11,7 +11,8 @@ import 'components/accelerometer_frame/accelerometer_frame.dart';
 import 'components/accelerometer_frame/useraccelerometer_frame.dart';
 import 'components/gyroscope_frame/gyroscope_frame.dart';
 import 'components/magnetometer_frame/magnetometer_frame.dart';
-import 'package:gps/components/gps/gpschecker.dart';
+import 'package:gps/components/gps/gps_checker.dart';
+import 'package:gps/components/background/background.dart';
 // 클래스 파일로 로직 이동
 // home: DeadReckoningApp(), 이렇게 부르면 됌
 
@@ -49,6 +50,7 @@ class MyAppState extends State<MyApp> {
         ),
         body: Stack(
           children: [
+            BackgroundModule(),
             MapModule(),
             Positioned.fill(
               top: 0,
