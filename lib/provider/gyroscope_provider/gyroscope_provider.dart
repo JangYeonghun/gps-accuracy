@@ -5,7 +5,7 @@ import 'package:sensors_plus/sensors_plus.dart';
 
 class GyroscopeProvider with ChangeNotifier {
   final int _maxQueueSize = 100; // 큐의 최대 크기 설정 (원하는 크기로 변경 가능)
-  Queue<List<double>> _gyroscopeQueue = Queue<List<double>>();
+  final Queue<List<double>> _gyroscopeQueue = Queue<List<double>>();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
 
   GyroscopeProvider() {

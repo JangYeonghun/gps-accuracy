@@ -38,6 +38,7 @@ dependencies:
   sensors_plus:
   geolocator:
   flutter_background_service:
+  flutter_background_service_android:
   provider:
   permission_handler:
   latlong2:

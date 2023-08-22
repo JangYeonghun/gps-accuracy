@@ -5,11 +5,13 @@ import 'package:pedometer/pedometer.dart';
 String moveStat = 'null';
 
 class GetOutCar extends StatefulWidget {
+  const GetOutCar({Key? key}) : super(key: key);
+
   @override
-  _GetOutCarState createState() => _GetOutCarState();
+  GetOutCarState createState() => GetOutCarState();
 }
 
-class _GetOutCarState extends State<GetOutCar> {
+class GetOutCarState extends State<GetOutCar> {
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;
   String _status = '?', _steps = '?';

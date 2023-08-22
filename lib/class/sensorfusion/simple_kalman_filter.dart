@@ -1,6 +1,6 @@
 class SimpleKalmanFilter {
-  double _processNoise; // 프로세스 노이즈 (Q)
-  double _measurementNoise; // 측정 노이즈 (R)
+  final double _processNoise; // 프로세스 노이즈 (Q)
+  final double _measurementNoise; // 측정 노이즈 (R)
   double _stateEstimate = 0.0; // 현재 상태 추정 값 (x̂)
   double _errorCovariance = 1.0; // 오차 공분산 (P)
 

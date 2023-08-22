@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:gps/components/gps/background.dart';
+import 'package:gps/components/background/background.dart';
 
 class GpsChecker extends StatefulWidget {
   const GpsChecker({super.key});
@@ -14,8 +14,8 @@ class _GpsCheckerState extends State<GpsChecker> {
   bool _click = false;
 
   Future<void> check() async {
-    Future<bool> _isEnabled = Geolocator.isLocationServiceEnabled();
-    if (await _isEnabled) {
+    Future<bool> isEnabled = Geolocator.isLocationServiceEnabled();
+    if (await isEnabled) {
       _pass = true;
     } else {
       _pass = false;

@@ -10,7 +10,7 @@ class GpsDirectionModule {
     return direction;
   }
 
-  String D2T(direction) {
+  String directionToText(direction) {
     String dirText = '';
 
     if (0 <= direction && direction < 22.5 || 337.5 <= direction && direction <=360) {

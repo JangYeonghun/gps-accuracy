@@ -6,10 +6,10 @@ class UserAccelerometerFrame extends StatefulWidget {
   const UserAccelerometerFrame({Key? key}) : super(key: key);
 
   @override
-  _UserAccelerometerFrameState createState() => _UserAccelerometerFrameState();
+  UserAccelerometerFrameState createState() => UserAccelerometerFrameState();
 }
 
-class _UserAccelerometerFrameState extends State<UserAccelerometerFrame> {
+class UserAccelerometerFrameState extends State<UserAccelerometerFrame> {
   @override
   Widget build(BuildContext context) {
     final userAccelerometer =

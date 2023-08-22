@@ -13,8 +13,8 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-double Lat = 0;
-double Lng = 0;
+double lat = 0;
+double lng = 0;
 double accuracy = 0;
 double gSpeed = 0;
 double gDirect = 0;
@@ -24,11 +24,13 @@ double compDegree = 0;
 String compText = 'null';
 
 class BackgroundModule extends StatefulWidget {
+  const BackgroundModule({Key? key}) : super(key: key);
+
   @override
-  _BackgroundModuleState createState() => _BackgroundModuleState();
+  BackgroundModuleState createState() => BackgroundModuleState();
 }
 
-class _BackgroundModuleState extends State<BackgroundModule> {
+class BackgroundModuleState extends State<BackgroundModule> {
 
   @override
   void initState() {
@@ -39,19 +41,19 @@ class _BackgroundModuleState extends State<BackgroundModule> {
 
     FlutterBackgroundService().on('update_gps').listen((event) {
       setState(() {
-        Lat = event!['Lat'];
-        Lng = event!['Lng'];
-        accuracy = event!['accuracy'];
-        gSpeed = event!['gSpeed'];
-        gDirect = event!['gDirect'];
-        gD2T = event!['gD2T'];
+        lat = event!['lat'];
+        lng = event['lng'];
+        accuracy = event['accuracy'];
+        gSpeed = event['gSpeed'];
+        gDirect = event['gDirect'];
+        gD2T = event['gD2T'];
       });
     });
 
     FlutterBackgroundService().on('update_compass').listen((event) {
       setState(() {
         compDegree = event!['compDegree'];
-        compText = event!['compText'];
+        compText = event['compText'];
       });
     });
   }
@@ -95,12 +97,12 @@ class _BackgroundModuleState extends State<BackgroundModule> {
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
       child: Text(
-          '위도: $Lat, 경도: $Lng\n오차범위: ${accuracy}m\n위치기반 속도: ${gSpeed}km/h\n위치기반 이동 방향: $gDirect, $gD2T\n방향: $compDegree, $compText'),
+          '위도: $lat, 경도: $lng\n오차범위: ${accuracy}m\n위치기반 속도: ${gSpeed}km/h\n위치기반 이동 방향: $gDirect, $gD2T\n방향: $compDegree, $compText'),
     );
   }
 }
 
-Queue<double> GpsQueue = ListQueue<double>(3);
+Queue<double> gpsQueue = ListQueue<double>(3);
 double tick = 0;
 
 final LocationSettings locationSettings = LocationSettings(
@@ -116,39 +118,38 @@ void onStart(ServiceInstance service) {
   });
 
   // GPS
-  StreamSubscription<Position> _positionStream =
+  //StreamSubscription<Position> _positionStream =
   Geolocator.getPositionStream(locationSettings: locationSettings)
       .listen((Position position) {
     DateTime now = DateTime.now();
-    Lat = position.latitude;
-    Lng = position.longitude;
+    lat = position.latitude;
+    lng = position.longitude;
     accuracy = position.accuracy;
     tick = now.hour * 1 + now.minute / 60 + now.second / 3600;
 
-    if (GpsQueue.isNotEmpty) {
+    if (gpsQueue.isNotEmpty) {
       final Distance distance = Distance();
-      double oldLat = GpsQueue.removeFirst();
-      double oldLng = GpsQueue.removeFirst();
-      double oldTick = GpsQueue.removeFirst();
+      double oldLat = gpsQueue.removeFirst();
+      double oldLng = gpsQueue.removeFirst();
+      double oldTick = gpsQueue.removeFirst();
       final double meter = distance(
-          LatLng(oldLat, oldLng), LatLng(Lat, Lng));
+          LatLng(oldLat, oldLng), LatLng(lat, lng));
       double tT = tick - oldTick;
       gSpeed = meter / tT / 1000;
       gDirect = GpsDirectionModule().calculateDirection(
-          LatLng(oldLat, oldLng), LatLng(Lat, Lng));
-      gD2T = GpsDirectionModule().D2T(gDirect);
+          LatLng(oldLat, oldLng), LatLng(lat, lng));
+      gD2T = GpsDirectionModule().directionToText(gDirect);
     } else {
       gSpeed = 0;
     }
-    GpsQueue.addAll([Lat, Lng, tick]);
+    gpsQueue.addAll([lat, lng, tick]);
     LogModule.logging();
 
     service.invoke(
       'update_gps',
       {
-        'datetime': DateTime.now().toIso8601String(),
-        'Lat': Lat,
-        'Lng': Lng,
+        'lat': lat,
+        'lng': lng,
         'accuracy': accuracy,
         'gSpeed': gSpeed,
         'gDirect': gDirect,
@@ -163,7 +164,7 @@ void onStart(ServiceInstance service) {
   FlutterCompass.events?.listen((event) {
     double? compassHeading = event.heading;
     compDegree = (compassHeading! + 360) % 360;
-    compText = GpsDirectionModule().D2T(compDegree);
+    compText = GpsDirectionModule().directionToText(compDegree);
     service.invoke(
       'update_compass',
       {
@@ -210,7 +211,6 @@ void onStart(ServiceInstance service) {
     service.invoke(
       'update',
       {
-        'current_date': DateTime.now().toIso8601String(),
         'device': device,
       },
     );
