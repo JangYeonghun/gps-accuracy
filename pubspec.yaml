@@ -41,7 +41,6 @@ dependencies:
   flutter_background_service_android:
   provider:
   permission_handler:
-  latlong2:
   pedometer:
   url_launcher:
   logger:
