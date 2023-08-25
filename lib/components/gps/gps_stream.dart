@@ -1,10 +1,8 @@
 import 'dart:collection';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:gps/components/gps/gps_direction.dart';
 import 'package:gps/components/log/logger.dart';
 import 'package:gps/utility/direction_to_text.dart';
-import 'package:latlong2/latlong.dart';
 
 double lat = 0;
 double lng = 0;
@@ -18,7 +16,7 @@ double tick = 0;
 
 final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.bestForNavigation,
-    distanceFilter: 5
+    distanceFilter: 1
 );
 
 // GPS
@@ -33,16 +31,13 @@ void onStartGps(ServiceInstance service) {
     tick = now.hour * 1 + now.minute / 60 + now.second / 3600;
 
     if (gpsQueue.isNotEmpty) {
-      final Distance distance = Distance();
       double oldLat = gpsQueue.removeFirst();
       double oldLng = gpsQueue.removeFirst();
       double oldTick = gpsQueue.removeFirst();
-      final double meter = distance(
-          LatLng(oldLat, oldLng), LatLng(lat, lng));
+      final double meter = Geolocator.distanceBetween(oldLat, oldLng, lat, lng);
       double tT = tick - oldTick;
       gSpeed = meter / tT / 1000;
-      gDirect = calculateDirection(
-          LatLng(oldLat, oldLng), LatLng(lat, lng));
+      gDirect = position.heading;
       gD2T = directionToText(gDirect);
     } else {
       gSpeed = 0;
